@@ -1,0 +1,11 @@
+{
+  "name": "typed-ipc",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "repository": "https://github.com/zardoy/typed-ipc.git",
+  "author": "Vitaly Turovsky <vital2580@icloud.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "electron": "^11.2.3"
+  }
+}
