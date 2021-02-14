@@ -1,5 +1,7 @@
 # Typed IPC
 
+<!-- look at https://github.com/orourkek/typesafe-ipc -->
+
 <!-- what is renderer, main process (side) -->
 
 <!-- invokers always uses promise -->
