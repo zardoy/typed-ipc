@@ -2,7 +2,7 @@ import Electron, { BrowserWindow, ipcMain } from "electron";
 import { Merge } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
-import { EventListenerArgs } from "./util";
+import { EventListenerArgs, getWrongProcessMessage } from "./util";
 
 // EVENT TYPES
 
@@ -41,7 +41,7 @@ type IpcMainAllHandlers = {
 /**
  * This can be used in main process only
  */
-export const typedIpcMain = {
+let typedIpcMain = {
     // GROUP ALL-IN-ONE-PLACE. Use it to handle everything in one place (highly-recommended)
 
     /**
@@ -91,3 +91,13 @@ export const typedIpcMain = {
         win.webContents.send(channel, data);
     }
 };
+
+if (process.type !== "browser") {
+    typedIpcMain = new Proxy({} as typeof typedIpcMain, {
+        get(_, property: string) {
+            throw new Error(getWrongProcessMessage("typedIpcMain", property));
+        }
+    });
+}
+
+export { typedIpcMain };

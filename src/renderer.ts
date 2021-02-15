@@ -2,7 +2,7 @@ import { IpcRenderer, ipcRenderer } from "electron";
 import { RequireExactlyOne } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
-import { EventListenerArgs } from "./util";
+import { EventListenerArgs, getWrongProcessMessage } from "./util";
 
 // EVENT TYPES
 
@@ -27,7 +27,7 @@ type AddRemoveEventListener<R extends keyof IpcRendererEvents = keyof IpcRendere
     listener: IpcRendererEventListener<R>
 ) => IpcEventReturnType;
 
-export const typedIpcRenderer = {
+let typedIpcRenderer = {
     send: ipcRenderer.send.bind(ipcRenderer) as IpcRendererSend,
     /**
      * Make query to main process.
@@ -38,3 +38,13 @@ export const typedIpcRenderer = {
     removeEventListener: ipcRenderer.removeListener.bind(ipcRenderer) as AddRemoveEventListener,
     removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: keyof IpcRendererEvents) => Electron.IpcRenderer
 };
+
+if (process.type === "browser") {
+    typedIpcRenderer = new Proxy({} as typeof typedIpcRenderer, {
+        get(_, property: string) {
+            throw new Error(getWrongProcessMessage("typedIpcRenderer", property));
+        }
+    });
+}
+
+export { typedIpcRenderer };
