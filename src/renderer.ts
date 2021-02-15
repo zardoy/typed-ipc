@@ -27,7 +27,12 @@ type AddRemoveEventListener<R extends keyof IpcRendererEvents = keyof IpcRendere
     listener: IpcRendererEventListener<R>
 ) => IpcEventReturnType;
 
-let typedIpcRenderer = {
+const isWrongProcess = process.type === "browser";
+
+/**
+ * Can be used in main renderer only
+ */
+let typedIpcRenderer = isWrongProcess ? undefined! : {
     send: ipcRenderer.send.bind(ipcRenderer) as IpcRendererSend,
     /**
      * Make query to main process.
@@ -39,7 +44,7 @@ let typedIpcRenderer = {
     removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: keyof IpcRendererEvents) => Electron.IpcRenderer
 };
 
-if (process.type === "browser") {
+if (isWrongProcess) {
     typedIpcRenderer = new Proxy({} as typeof typedIpcRenderer, {
         get(_, property: string) {
             throw new Error(getWrongProcessMessage("typedIpcRenderer", property));

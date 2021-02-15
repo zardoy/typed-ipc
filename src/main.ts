@@ -38,10 +38,12 @@ type IpcMainAllHandlers = {
     [query in keyof IpcMainQueries]: IpcMainHandler<query>
 };
 
+const isWrongProcess = process.type !== "browser";
+
 /**
- * This can be used in main process only
+ * Can be used in main process only
  */
-let typedIpcMain = {
+let typedIpcMain = isWrongProcess ? undefined! : {
     // GROUP ALL-IN-ONE-PLACE. Use it to handle everything in one place (highly-recommended)
 
     /**
@@ -92,7 +94,7 @@ let typedIpcMain = {
     }
 };
 
-if (process.type !== "browser") {
+if (isWrongProcess) {
     typedIpcMain = new Proxy({} as typeof typedIpcMain, {
         get(_, property: string) {
             throw new Error(getWrongProcessMessage("typedIpcMain", property));
