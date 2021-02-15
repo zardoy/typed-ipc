@@ -9,7 +9,7 @@ import { EventListenerArgs } from "./util";
 export type IpcRendererEventListener<E extends keyof IpcRendererEvents> =
     (...args: EventListenerArgs<Electron.IpcRendererEvent, IpcRendererEvents[E]>) => void;
 
-type IpcRendererSend = <E extends keyof IpcMainEvents>(event: E, variables: IpcMainEvents[E]) => void;
+type IpcRendererSend = <E extends keyof IpcMainEvents>(...args: EventListenerArgs<E, IpcMainEvents[E]>) => void;
 
 type RequestArgs<Q extends keyof IpcMainQueries> = IpcMainQueries[Q] extends { variables: infer K; } ?
     [query: Q, variables: IpcMainQueries[Q]] :
