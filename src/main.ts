@@ -1,19 +1,19 @@
 import Electron, { BrowserWindow, ipcMain } from "electron";
+import { Merge } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
+import { EventListenerArgs } from "./util";
 
 // EVENT TYPES
 
 // todo-low =? syntax
 type ElectronEventArg<R extends keyof IpcRendererEvents = keyof IpcRendererEvents> =
-    Omit<Electron.IpcMainEvent, "reply"> & {
+    Merge<Electron.IpcMainEvent, {
         reply: (channel: R, dataToSend: IpcRendererEvents[R]) => void;
-    };
+    }>;
 
 export type IpcMainEventListener<E extends keyof IpcMainEvents> =
-    IpcMainEvents[E] extends void ?
-    (utils: ElectronEventArg, variables?: undefined) => void :
-    (utils: ElectronEventArg, variables: IpcMainEvents[E]) => void;
+    (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
 
 type IpcMainAllEventListeners = {
     [event in keyof IpcMainEvents]: IpcMainEventListener<event>

@@ -2,13 +2,12 @@ import { IpcRenderer, ipcRenderer } from "electron";
 import { RequireExactlyOne } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
+import { EventListenerArgs } from "./util";
 
 // EVENT TYPES
 
 export type IpcRendererEventListener<E extends keyof IpcRendererEvents> =
-    IpcRendererEvents[E] extends void ?
-    (event: Electron.IpcRendererEvent, variables?: undefined) => unknown :
-    (event: Electron.IpcRendererEvent, variables: IpcRendererEvents[E]) => unknown;
+    (...args: EventListenerArgs<Electron.IpcRendererEvent, IpcRendererEvents[E]>) => void;
 
 type IpcRendererSend = <E extends keyof IpcMainEvents>(event: E, variables: IpcMainEvents[E]) => void;
 
