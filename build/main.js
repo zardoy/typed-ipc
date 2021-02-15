@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typedIpcMain = void 0;
 const electron_1 = require("electron");
+const util_1 = require("./util");
+const isWrongProcess = process.type !== "browser";
 /**
- * This can be used in main process only
+ * Can be used in main process only
  */
-exports.typedIpcMain = {
+let typedIpcMain = isWrongProcess ? undefined : {
     // GROUP ALL-IN-ONE-PLACE. Use it to handle everything in one place (highly-recommended)
     /**
      * Use it to define all IPC event listeners in one place
@@ -49,3 +51,11 @@ exports.typedIpcMain = {
         win.webContents.send(channel, data);
     }
 };
+exports.typedIpcMain = typedIpcMain;
+if (isWrongProcess) {
+    exports.typedIpcMain = typedIpcMain = new Proxy({}, {
+        get(_, property) {
+            throw new Error(util_1.getWrongProcessMessage("typedIpcMain", property));
+        }
+    });
+}

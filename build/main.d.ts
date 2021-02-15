@@ -20,9 +20,9 @@ declare type IpcMainAllHandlers = {
     [query in keyof IpcMainQueries]: IpcMainHandler<query>;
 };
 /**
- * This can be used in main process only
+ * Can be used in main process only
  */
-export declare const typedIpcMain: {
+declare let typedIpcMain: {
     /**
      * Use it to define all IPC event listeners in one place
      */
@@ -36,4 +36,4 @@ export declare const typedIpcMain: {
     removeAllListeners: (event: keyof IpcMainEvents) => IpcEventReturnType;
     sendToWindow<E extends never>(win: BrowserWindow | null, channel: E, data: IpcRendererEvents[E]): void;
 };
-export {};
+export { typedIpcMain };
