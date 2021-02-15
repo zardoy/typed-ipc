@@ -9,3 +9,5 @@
 <!-- invokers always uses promise -->
 
 <!-- write comprehensive guide (and that handlers always takes precedence) -->
+
+... Obviously, it's not allowed to use `typedIpcMain` from renderer process and `typedIpcRenderer` from main process.
