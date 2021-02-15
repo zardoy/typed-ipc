@@ -12,9 +12,13 @@ export type IpcRendererEventListener<E extends keyof IpcRendererEvents> =
 
 type IpcRendererSend = <E extends keyof IpcMainEvents>(event: E, variables: IpcMainEvents[E]) => void;
 
+type RequestArgs<Q extends keyof IpcMainQueries> = IpcMainQueries[Q] extends { variables: infer K; } ?
+    [query: Q, variables: IpcMainQueries[Q]] :
+    [query: Q, variables?: {}];
+
 // todo rewrite types
 type IpcRendererRequest =
-    <Q extends keyof IpcMainQueries>(channel: Q, variables: IpcMainQueries[Q] extends { variables: infer K; } ? K : undefined)
+    <Q extends keyof IpcMainQueries>(...args: RequestArgs<Q>)
         => Promise<IpcMainQueries[Q] extends { result: infer T; } ? RequireExactlyOne<{ data: T, error: Error; }, "data" | "error"> : { error?: Error; }>;
 
 type IpcEventReturnType = ReturnType<typeof ipcRenderer["addListener"]>;
