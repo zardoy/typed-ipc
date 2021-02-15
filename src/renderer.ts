@@ -18,7 +18,7 @@ type RequestArgs<Q extends keyof IpcMainQueries> = IpcMainQueries[Q] extends { v
 // todo rewrite types
 type IpcRendererRequest =
     <Q extends keyof IpcMainQueries>(...args: RequestArgs<Q>)
-        => Promise<IpcMainQueries[Q] extends { result: infer T; } ? RequireExactlyOne<{ data: T, error: Error; }, "data" | "error"> : { error?: Error; }>;
+        => Promise<IpcMainQueries[Q] extends { data: infer T; } ? RequireExactlyOne<{ data: T, error: Error; }, "data" | "error"> : { error?: Error; }>;
 
 type IpcEventReturnType = ReturnType<typeof ipcRenderer["addListener"]>;
 
