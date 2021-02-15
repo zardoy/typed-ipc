@@ -3,13 +3,15 @@
 export type EventListenerArgs<Event, variables> =
     variables extends void ? [event: Event] : [event: Event, variables: variables];
 
+export type ProcessSide = "main" | "renderer";
+
 // UTILITY FUNCTIONS
 
-export const getWrongProcessMessage = (wrongModule: `typedIpc${"Main" | "Renderer"}`, property: string) => {
+export const getWrongProcessMessage = (wrongModule: `typedIpc${Capitalize<ProcessSide>}`, property: string) => {
     // todo
     const currentSide = !process?.type ? "unknown" :
         process.type === "browser" ? "main"
             : process.type;
-    const neededSide = wrongModule === "typedIpcMain" ? "renderer" : "main";
+    const neededSide: ProcessSide = wrongModule === "typedIpcMain" ? "main" : "renderer";
     return `You are trying to call ${wrongModule}.${property} from ${currentSide} process, but ${wrongModule} is available only in ${neededSide} process`;
 };
