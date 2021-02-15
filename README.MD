@@ -1,5 +1,7 @@
 # Typed IPC
 
+> API might change
+
 <!-- look at https://github.com/orourkek/typesafe-ipc -->
 
 <!-- what is renderer, main process (side) -->

@@ -1,18 +1,26 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
-
 /**
  * Define your IPC events, that might be triggered in main process
+ * 
+ * `eventName: variables`(or `void`)
+ * @example quit: void
  */
-interface IpcMainEvents { }
+export interface IpcMainEvents { }
 /**
  * Define your IPC events, that might be triggered in renderer process
+ * eventName: variables (or void)
  */
-interface IpcRendererEvents { }
+export interface IpcRendererEvents { }
 
 /**
- * @deprecated help me to rename it. Could be removed soon.
+ * Can also mutate data, why not.
+ * 
+ * Please help me to rename it.
+ * 
+ * @example see IpcMainQueriesExample
  */
-interface IpcQueries {
+export interface IpcMainQueries { }
+
+interface IpcMainQueriesExample {
     downloadVideo: {
         /**
          * Variables that must be passed from renderer side.
@@ -31,47 +39,5 @@ interface IpcQueries {
     };
 }
 
-/**
- * This can be used in main process only
- */
-export const typedIpcMain = {
-    /**
-     * Use it to define all IPC event listeners in one place
-     */
-    bindAllEventListeners: (allIPCEventListeners: AllIPCEventListeners): void => {
-        Object.entries(allIPCEventListeners).forEach(([eventName, eventListener]) => {
-            ipcMain.on(eventName, async (event, dataFromRenderer) => {
-                await eventListener({ event, reply: event.reply as any }, dataFromRenderer);
-            });
-        });
-    },
-
-    /**
-     * Use it to hanlde all app's request in one place.
-     */
-    handleAllRequests: (allIpcHandlers: AllIpcHandlers): void => {
-        Object.entries(allIpcHandlers).forEach(([requestName, handler]) => {
-            ipcMain.handle(requestName, async (e, data) => {
-                try {
-                    return {
-                        result: await handler(e, data)
-                    };
-                } catch (err) {
-                    return {
-                        error: err
-                    };
-                }
-            });
-        });
-    },
-    sendToWindow<E extends keyof RendererEventsData>(
-        // reducing boilerplates
-        win: BrowserWindow | null,
-        channel: E,
-        data: RendererEventsData[E]
-    ) {
-        if (!win) return;
-        win.webContents.send(channel, data);
-    }
-    // todo add methods from typedIpcRenderer.ts
-};
+export * from "./main";
+export * from "./renderer";
