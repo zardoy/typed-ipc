@@ -13,10 +13,6 @@
 # testing
 /coverage
 
-# production
-/build
-/dist
-
 .env.local
 
 # misc
