@@ -2,40 +2,47 @@ import Electron, { BrowserWindow, ipcMain } from "electron";
 import { Merge } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
-import { EventListenerArgs, getWrongProcessMessage } from "./util";
+import {
+    EventListenerArgs,
+    getWrongProcessMessage,
+    IpcMainEventNames,
+    IpcMainQueryNames,
+    IpcRendererEventNames
+} from "./util";
 
 // EVENT TYPES
 
+
 // todo-low =? syntax
-type ElectronEventArg<R extends keyof IpcRendererEvents = keyof IpcRendererEvents> =
+type ElectronEventArg<R extends IpcRendererEventNames = IpcRendererEventNames> =
     Merge<Electron.IpcMainEvent, {
         reply: (channel: R, dataToSend: IpcRendererEvents[R]) => void;
     }>;
 
-export type IpcMainEventListener<E extends keyof IpcMainEvents> =
+export type IpcMainEventListener<E extends IpcMainEventNames> =
     (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
 
 type IpcMainAllEventListeners = {
-    [event in keyof IpcMainEvents]: IpcMainEventListener<event>
+    [event in IpcMainEventNames]: IpcMainEventListener<event>
 };
 
 type IpcEventReturnType = ReturnType<typeof ipcMain["addListener"]>;
 
-type AddRemoveEventListener<E extends keyof IpcMainEvents = keyof IpcMainEvents> = (
+type AddRemoveEventListener<E extends IpcMainEventNames> = (
     event: E,
     listener: IpcMainEventListener<E>
 ) => IpcEventReturnType;
 
 // HANDLE TYPES
 
-export type IpcMainHandler<R extends keyof IpcMainQueries> =
+export type IpcMainHandler<R extends IpcMainQueryNames> =
     (
         event: Electron.IpcMainInvokeEvent,
         variables: IpcMainQueries[R] extends { variables: infer K; } ? K : void
     ) => Promise<IpcMainQueries[R] extends { data: infer T; } ? T : void>;
 
 type IpcMainAllHandlers = {
-    [query in keyof IpcMainQueries]: IpcMainHandler<query>
+    [query in IpcMainQueryNames]: IpcMainHandler<query>
 };
 
 const isWrongProcess = process.type !== "browser";
@@ -78,12 +85,13 @@ let typedIpcMain = isWrongProcess ? undefined! : {
 
     // GROUP Add/Remove. not recommended (todo describe why)
 
-    addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener,
-    removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener,
-    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: keyof IpcMainEvents) => IpcEventReturnType,
+    // todo-high why never
+    addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
+    removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
+    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: IpcMainEventNames) => IpcEventReturnType,
     // todo other methods
 
-    sendToWindow<E extends keyof IpcRendererEvents>(
+    sendToWindow<E extends IpcRendererEventNames>(
         // reducing boilerplates
         win: BrowserWindow | null,
         channel: E,
