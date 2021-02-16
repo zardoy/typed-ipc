@@ -39,6 +39,7 @@ let typedIpcMain = isWrongProcess ? undefined : {
         });
     },
     // GROUP Add/Remove. not recommended (todo describe why)
+    // todo-high why never
     addEventListener: electron_1.ipcMain.addListener.bind(electron_1.ipcMain),
     removeEventListener: electron_1.ipcMain.removeListener.bind(electron_1.ipcMain),
     removeAllListeners: electron_1.ipcMain.removeAllListeners.bind(electron_1.ipcMain),
