@@ -5,7 +5,7 @@ import {
     EventListenerArgs,
     getWrongProcessMessage,
     IpcMainEventNames,
-    IpcMainQueryNames,
+    IpcMainRequestNames,
     IpcRendererEventNames
 } from "./util";
 
@@ -16,7 +16,7 @@ export type IpcRendererEventListener<E extends IpcRendererEventNames> =
 
 type IpcRendererSend = <E extends IpcMainEventNames>(...args: EventListenerArgs<E, IpcMainEvents[E]>) => void;
 
-type RequestArgs<Q extends IpcMainQueryNames> = IpcMainRequests[Q] extends { variables: infer K; } ?
+type RequestArgs<Q extends IpcMainRequestNames> = IpcMainRequests[Q] extends { variables: infer K; } ?
     [query: Q, variables: K] :
     [query: Q, variables?: {}];
 
@@ -40,7 +40,7 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      * Make query to main process.
      * TODO rename to query
      */
-    request: async <R extends IpcMainQueryNames>(
+    request: async <R extends IpcMainRequestNames>(
         ...invokeArgs: RequestArgs<R>
     ): Promise<IpcMainRequests[R] extends { data: infer T; } ? { data: T; } : {}> => {
         //@ts-ignore todo-high

@@ -12,7 +12,7 @@ declare module "./index" {
         anotherEventWithoutVars: undefined;
     }
 
-    interface IpcMainQueries {
+    interface IpcMainRequests {
         registerUser: {
             variables: {
                 userKey: number;

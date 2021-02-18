@@ -7,9 +7,9 @@ export type EventListenerArgs<Event, variables> =
 
 export type ProcessSide = "main" | "renderer";
 
-export type IpcRendererEventNames = keyof IpcRendererEvents;
 export type IpcMainEventNames = keyof IpcMainEvents;
-export type IpcMainQueryNames = keyof IpcMainRequests;
+export type IpcMainRequestNames = keyof IpcMainRequests;
+export type IpcRendererEventNames = keyof IpcRendererEvents;
 
 // UTILITY FUNCTIONS
 

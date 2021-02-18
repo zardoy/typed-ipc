@@ -6,7 +6,7 @@ import {
     EventListenerArgs,
     getWrongProcessMessage,
     IpcMainEventNames,
-    IpcMainQueryNames,
+    IpcMainRequestNames,
     IpcRendererEventNames
 } from "./util";
 
@@ -35,14 +35,14 @@ type AddRemoveEventListener<E extends IpcMainEventNames> = (
 
 // HANDLE TYPES
 
-export type IpcMainHandler<R extends IpcMainQueryNames> =
+export type IpcMainHandler<R extends IpcMainRequestNames> =
     (
         event: Electron.IpcMainInvokeEvent,
         variables: IpcMainRequests[R] extends { variables: infer K; } ? K : void
     ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>;
 
 type IpcMainAllHandlers = {
-    [query in IpcMainQueryNames]: IpcMainHandler<query>
+    [query in IpcMainRequestNames]: IpcMainHandler<query>
 };
 
 const isWrongProcess = process.type !== "browser";
@@ -85,7 +85,6 @@ let typedIpcMain = isWrongProcess ? undefined! : {
 
     // GROUP Add/Remove. not recommended (todo describe why)
 
-    // todo-high why never
     addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
     removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
     removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: IpcMainEventNames) => IpcEventReturnType,

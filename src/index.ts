@@ -5,14 +5,14 @@
  * @example quit: void
  */
 export interface IpcMainEvents {
-    pleaseDoNotEmitNeverTypescript: true;
+    IpcMainEventNamesTypeToReplace: true;
 }
 /**
  * Define your IPC events, that might be triggered in renderer process
  * eventName: variables (or void)
  */
 export interface IpcRendererEvents {
-    pleaseDoNotEmitNeverTypescript: true;
+    IpcRendererEventNamesTypeToReplace: true;
 }
 
 /**
@@ -22,7 +22,9 @@ export interface IpcRendererEvents {
  * 
  * @example see IpcMainQueriesExample
  */
-export interface IpcMainRequests { }
+export interface IpcMainRequests {
+    IpcMainRequestNamesTypeToReplace: true;
+}
 
 interface IpcMainQueriesExample {
     downloadVideo: {
