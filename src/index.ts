@@ -22,7 +22,7 @@ export interface IpcRendererEvents {
  * 
  * @example see IpcMainQueriesExample
  */
-export interface IpcMainQueries { }
+export interface IpcMainRequests { }
 
 interface IpcMainQueriesExample {
     downloadVideo: {

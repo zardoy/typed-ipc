@@ -1,4 +1,4 @@
-import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
+import { IpcMainEvents, IpcMainRequests, IpcRendererEvents } from "./";
 
 // UTILITY TYPES
 
@@ -9,7 +9,7 @@ export type ProcessSide = "main" | "renderer";
 
 export type IpcRendererEventNames = keyof IpcRendererEvents;
 export type IpcMainEventNames = keyof IpcMainEvents;
-export type IpcMainQueryNames = keyof IpcMainQueries;
+export type IpcMainQueryNames = keyof IpcMainRequests;
 
 // UTILITY FUNCTIONS
 

@@ -1,6 +1,6 @@
 import { IpcRenderer, ipcRenderer } from "electron";
 
-import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
+import { IpcMainEvents, IpcMainRequests, IpcRendererEvents } from "./";
 import {
     EventListenerArgs,
     getWrongProcessMessage,
@@ -16,7 +16,7 @@ export type IpcRendererEventListener<E extends IpcRendererEventNames> =
 
 type IpcRendererSend = <E extends IpcMainEventNames>(...args: EventListenerArgs<E, IpcMainEvents[E]>) => void;
 
-type RequestArgs<Q extends IpcMainQueryNames> = IpcMainQueries[Q] extends { variables: infer K; } ?
+type RequestArgs<Q extends IpcMainQueryNames> = IpcMainRequests[Q] extends { variables: infer K; } ?
     [query: Q, variables: K] :
     [query: Q, variables?: {}];
 
@@ -42,7 +42,7 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      */
     request: async <R extends IpcMainQueryNames>(
         ...invokeArgs: RequestArgs<R>
-    ): Promise<IpcMainQueries[R] extends { data: infer T; } ? { data: T; } : {}> => {
+    ): Promise<IpcMainRequests[R] extends { data: infer T; } ? { data: T; } : {}> => {
         //@ts-ignore todo-high
         const result = await ipcRenderer.invoke(...invokeArgs);
         if ("error" in result) {
