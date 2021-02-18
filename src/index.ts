@@ -4,12 +4,16 @@
  * `eventName: variables`(or `void`)
  * @example quit: void
  */
-export interface IpcMainEvents { }
+export interface IpcMainEvents {
+    pleaseDoNotEmitNeverTypescript: true;
+}
 /**
  * Define your IPC events, that might be triggered in renderer process
  * eventName: variables (or void)
  */
-export interface IpcRendererEvents { }
+export interface IpcRendererEvents {
+    pleaseDoNotEmitNeverTypescript: true;
+}
 
 /**
  * Can also mutate data, why not.
