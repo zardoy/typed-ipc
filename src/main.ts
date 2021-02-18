@@ -22,7 +22,8 @@ type ElectronEventArg = Merge<Electron.IpcMainEvent, {
 export type IpcMainEventListener<E extends IpcMainEventNames> =
     (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
 
-type IpcMainAllEventListeners = {
+// if never - user didn't augment the interface
+type IpcMainAllEventListeners = IpcMainEventNames extends never ? {} : {
     [event in IpcMainEventNames]: IpcMainEventListener<event>
 };
 
@@ -39,7 +40,7 @@ export type IpcMainHandler<R extends IpcMainRequestNames> =
         variables: IpcMainRequests[R] extends { variables: infer K; } ? K : void
     ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>;
 
-type IpcMainAllHandlers = {
+type IpcMainAllHandlers = IpcMainRequestNames extends never ? {} : {
     [Request in IpcMainRequestNames]: IpcMainHandler<Request>
 };
 
