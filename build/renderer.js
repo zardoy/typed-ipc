@@ -10,10 +10,9 @@ const isWrongProcess = process.type === "browser";
 let typedIpcRenderer = isWrongProcess ? undefined : {
     send: electron_1.ipcRenderer.send.bind(electron_1.ipcRenderer),
     /**
-     * important: will throw error if it was throwed in main process
+     * Make request to main process.
      *
-     * Make query to main process.
-     * TODO rename to query
+     * Important: it will throw error if it was thrown in main process
      */
     request: async (...invokeArgs) => {
         //@ts-ignore todo-high

@@ -22,7 +22,7 @@ let typedIpcMain = isWrongProcess ? undefined : {
     /**
      * Use it to hanlde all app's queries in one place.
      */
-    handleAllQueries: (allIpcHandlers) => {
+    handleAllRequests: (allIpcHandlers) => {
         Object.entries(allIpcHandlers).forEach(([requestName, handler]) => {
             electron_1.ipcMain.handle(requestName, async (e, data) => {
                 try {
