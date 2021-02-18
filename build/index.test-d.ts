@@ -4,12 +4,11 @@ import { typedIpcMain, typedIpcRenderer } from "./index";
 
 declare module "./index" {
     interface IpcMainEvents {
-        testEvent: {
-            numberVar: number;
-            stringVar: string;
+        eventFirst: {
+            firstEventVar: number;
         };
-        otherTestEvent: {
-            someKey: string;
+        secondEvent: {
+            secondEventVar: boolean;
         };
         eventWithoutVars: null;
         anotherEventWithoutVars: undefined;
@@ -54,9 +53,15 @@ declare module "./index" {
 typedIpcMain.bindAllEventListeners({
     anotherEventWithoutVars() { },
     eventWithoutVars() { },
-    testEvent() { },
-    //@ts-expect-error
-    unknownEvent: () => { }
+    eventFirst() { },
+    secondEvent() { }
+});
+
+//@ts-expect-error not all event listeners
+typedIpcMain.bindAllEventListeners({
+    anotherEventWithoutVars() { },
+    eventWithoutVars() { },
+    eventFirst() { }
 });
 
 typedIpcMain.handleAllQueries({
@@ -72,15 +77,25 @@ typedIpcMain.handleAllQueries({
     async unknownRequest() { }
 });
 
-//@ts-expect-error
+//@ts-expect-error test unknown events
 typedIpcMain.addEventListener("unknownEvent", () => { });
 //@ts-expect-error
-typedIpcMain.addEventListener("testEvent", (event, { someKey }) => { });
+typedIpcMain.removeAllListeners("unknownEvent");
 
 
-typedIpcMain.removeEventListener("testEvent", () => { });
+// should pass with variables from first event
+typedIpcMain.addEventListener("eventFirst", (event, { firstEventVar }) => {
+    event.reply("showDialog", { message: "", withOkButton: true });
+    //@ts-expect-error
+    event.reply("sayHiToUser", { message: "", withOkButton: true });
+});
 
-typedIpcMain.removeAllListeners("testEvent");
+//@ts-expect-error firstEventVar shouldn't exist on firstEvent only
+typedIpcMain.addEventListener("secondEvent", (event, { firstEventVar }) => { });
+
+typedIpcMain.removeEventListener("eventFirst", () => { });
+
+typedIpcMain.removeAllListeners("eventFirst");
 
 typedIpcMain.sendToWindow({} as BrowserWindow, "sayHiToUser");
 //@ts-expect-error
@@ -99,26 +114,31 @@ typedIpcMain.sendToWindow({} as BrowserWindow, "unknownEvent");
 //@ts-expect-error
 typedIpcRenderer.send("unknownEvent");
 
-typedIpcRenderer.send("testEvent", { numberVar: 0, stringVar: "" });
+typedIpcRenderer.send("eventFirst", { firstEventVar: 0 });
+typedIpcRenderer.send("secondEvent", { secondEventVar: true });
 //@ts-expect-error
-typedIpcRenderer.send("otherTestEvent", { numberVar: 0, stringVar: "" });
-//@ts-expect-error
-typedIpcRenderer.send("testEvent", { numberVar: "incorrect type", stringVar: 0 });
+typedIpcRenderer.send("secondEvent", { firstEventVar: 0 });
 
 typedIpcRenderer.send("eventWithoutVars");
-//@ts-expect-error
-typedIpcRenderer.send("eventWithoutVars", { test: "hey" });
-
 typedIpcRenderer.send("anotherEventWithoutVars");
+//@ts-expect-error
+typedIpcRenderer.send("eventWithoutVars", { firstEventVar: 0 });
+
+
 
 const { data } = await typedIpcRenderer.request("registerUser", {
     name: "",
     userKey: 0,
-    //@ts-expect-error
-    waveToUser: true
 });
 
-data?.registered;
+data.registered;
+
+typedIpcRenderer.request("registerUser", {
+    name: "",
+    userKey: 0,
+    //@ts-expect-error
+    extraArg: ""
+});
 
 typedIpcRenderer.request("queryWithoutVars");
 typedIpcRenderer.request("queryWithoutVars", {});
