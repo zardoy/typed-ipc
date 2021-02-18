@@ -41,6 +41,8 @@ const isWrongProcess = process.type === "browser";
 let typedIpcRenderer = isWrongProcess ? undefined! : {
     send: ipcRenderer.send.bind(ipcRenderer) as IpcRendererSend,
     /**
+     * important: will throw error if it was throwed in main process
+     * 
      * Make query to main process.
      * TODO rename to query
      */
