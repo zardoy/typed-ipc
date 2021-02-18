@@ -1,7 +1,7 @@
 import Electron, { BrowserWindow, ipcMain } from "electron";
 import { Merge } from "type-fest";
 
-import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
+import { IpcMainEvents, IpcMainRequests, IpcRendererEvents } from "./";
 import {
     EventListenerArgs,
     getWrongProcessMessage,
@@ -38,8 +38,8 @@ type AddRemoveEventListener<E extends IpcMainEventNames> = (
 export type IpcMainHandler<R extends IpcMainQueryNames> =
     (
         event: Electron.IpcMainInvokeEvent,
-        variables: IpcMainQueries[R] extends { variables: infer K; } ? K : void
-    ) => Promise<IpcMainQueries[R] extends { data: infer T; } ? T : void>;
+        variables: IpcMainRequests[R] extends { variables: infer K; } ? K : void
+    ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>;
 
 type IpcMainAllHandlers = {
     [query in IpcMainQueryNames]: IpcMainHandler<query>
