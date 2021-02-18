@@ -14,3 +14,5 @@ replaceInFileSync({
     // todo to regex support
     to: match => match.slice(1, match.lastIndexOf("TypeToReplace"))
 });
+
+// todo-help search in build/* for TypeToReplace in throw if it find something
