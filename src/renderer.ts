@@ -46,7 +46,17 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      * Make query to main process.
      * TODO rename to query
      */
-    request: ipcRenderer.invoke.bind(ipcRenderer) as IpcRendererRequest,
+    request: async <R extends IpcMainQueryNames>(
+        ...invokeArgs: RequestArgs<R>
+    ): Promise<IpcMainQueries[R] extends { data: infer T; } ? { data: T; } : {}> => {
+        //@ts-ignore todo-high
+        const result = await ipcRenderer.invoke(...invokeArgs);
+        if ("error" in result) {
+            throw result.error;
+        } else {
+            return result;
+        }
+    },
     addEventListener: ipcRenderer.on.bind(ipcRenderer) as AddRemoveEventListener,
     removeEventListener: ipcRenderer.removeListener.bind(ipcRenderer) as AddRemoveEventListener,
     removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: IpcRendererEventNames) => Electron.IpcRenderer
