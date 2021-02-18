@@ -8,6 +8,9 @@ declare module "./index" {
             numberVar: number;
             stringVar: string;
         };
+        otherTestEvent: {
+            someKey: string;
+        };
         eventWithoutVars: null;
         anotherEventWithoutVars: undefined;
     }
@@ -45,6 +48,7 @@ declare module "./index" {
     }
 }
 
+
 // MAIN PROCESS
 
 typedIpcMain.bindAllEventListeners({
@@ -70,6 +74,8 @@ typedIpcMain.handleAllQueries({
 
 //@ts-expect-error
 typedIpcMain.addEventListener("unknownEvent", () => { });
+//@ts-expect-error
+typedIpcMain.addEventListener("testEvent", (event, { someKey }) => { });
 
 
 typedIpcMain.removeEventListener("testEvent", () => { });
@@ -79,11 +85,14 @@ typedIpcMain.removeAllListeners("testEvent");
 typedIpcMain.sendToWindow({} as BrowserWindow, "sayHiToUser");
 //@ts-expect-error
 typedIpcMain.sendToWindow({} as BrowserWindow, "sayHiToUser", undefined);
+//@ts-expect-error
+typedIpcMain.sendToWindow({} as BrowserWindow, "sayHiToUser", { message: "I'm having a bad day ;(", withOkButton: true });
 
 typedIpcMain.sendToWindow({} as BrowserWindow, "showDialog", { message: "I'm having a bad day ;(", withOkButton: false });
 
 //@ts-expect-error
 typedIpcMain.sendToWindow({} as BrowserWindow, "unknownEvent");
+
 
 // RENDERER PROCESS
 
@@ -91,6 +100,8 @@ typedIpcMain.sendToWindow({} as BrowserWindow, "unknownEvent");
 typedIpcRenderer.send("unknownEvent");
 
 typedIpcRenderer.send("testEvent", { numberVar: 0, stringVar: "" });
+//@ts-expect-error
+typedIpcRenderer.send("otherTestEvent", { numberVar: 0, stringVar: "" });
 //@ts-expect-error
 typedIpcRenderer.send("testEvent", { numberVar: "incorrect type", stringVar: 0 });
 
@@ -100,7 +111,12 @@ typedIpcRenderer.send("eventWithoutVars", { test: "hey" });
 
 typedIpcRenderer.send("anotherEventWithoutVars");
 
-const { data } = await typedIpcRenderer.request("registerUser", { name: "", userKey: 0 });
+const { data } = await typedIpcRenderer.request("registerUser", {
+    name: "",
+    userKey: 0,
+    //@ts-expect-error
+    waveToUser: true
+});
 
 data?.registered;
 
