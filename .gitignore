@@ -14,7 +14,9 @@
 /coverage
 
 # production
-/build
+!/build
+/build/*
+!/build/index.test-d.ts
 /dist
 
 .env.local
