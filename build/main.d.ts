@@ -7,7 +7,7 @@ declare type ElectronEventArg = Merge<Electron.IpcMainEvent, {
     reply: <R extends IpcRendererEventNames>(channel: R, dataToSend: IpcRendererEvents[R]) => void;
 }>;
 export declare type IpcMainEventListener<E extends IpcMainEventNames> = (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
-declare type IpcMainAllEventListeners = {
+declare type IpcMainAllEventListeners = IpcMainEventNames extends never ? {} : {
     [event in IpcMainEventNames]: IpcMainEventListener<event>;
 };
 declare type AddRemoveEventListener = <E extends IpcMainEventNames>(event: E, listener: IpcMainEventListener<E>) => IpcManageEventsReturnType;
@@ -16,7 +16,7 @@ export declare type IpcMainHandler<R extends IpcMainRequestNames> = (event: Elec
 } ? K : void) => Promise<IpcMainRequests[R] extends {
     data: infer T;
 } ? T : void>;
-declare type IpcMainAllHandlers = {
+declare type IpcMainAllHandlers = IpcMainRequestNames extends never ? {} : {
     [Request in IpcMainRequestNames]: IpcMainHandler<Request>;
 };
 /**
