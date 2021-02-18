@@ -19,8 +19,8 @@ export type IpcRendererEventListener<E extends IpcRendererEventNames> =
 type IpcRendererSend = <E extends IpcMainEventNames>(...args: EventListenerArgs<E, IpcMainEvents[E]>) => void;
 
 type RequestArgs<Q extends IpcMainRequestNames> = IpcMainRequests[Q] extends { variables: infer K; } ?
-    [query: Q, variables: K] :
-    [query: Q, variables?: {}];
+    [requestName: Q, variables: K] :
+    [requestName: Q, variables?: {}];
 
 type AddRemoveEventListener = <R extends IpcRendererEventNames>(
     event: R,
@@ -35,10 +35,9 @@ const isWrongProcess = process.type === "browser";
 let typedIpcRenderer = isWrongProcess ? undefined! : {
     send: ipcRenderer.send.bind(ipcRenderer) as IpcRendererSend,
     /**
-     * important: will throw error if it was throwed in main process
+     * Make request to main process.
      * 
-     * Make query to main process.
-     * TODO rename to query
+     * Important: it will throw error if it was thrown in main process
      */
     request: async <R extends IpcMainRequestNames>(
         ...invokeArgs: RequestArgs<R>

@@ -64,7 +64,7 @@ typedIpcMain.bindAllEventListeners({
     eventFirst() { }
 });
 
-typedIpcMain.handleAllQueries({
+typedIpcMain.handleAllRequests({
     async queryJustQuery() { },
     async queryWithVariablesOnly(_, { something }) { },
     async queryWithoutVars() {

@@ -40,7 +40,7 @@ export type IpcMainHandler<R extends IpcMainRequestNames> =
     ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>;
 
 type IpcMainAllHandlers = {
-    [query in IpcMainRequestNames]: IpcMainHandler<query>
+    [Request in IpcMainRequestNames]: IpcMainHandler<Request>
 };
 
 const isWrongProcess = process.type !== "browser";
