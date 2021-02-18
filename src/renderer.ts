@@ -18,7 +18,7 @@ export type IpcRendererEventListener<E extends IpcRendererEventNames> =
 type IpcRendererSend = <E extends IpcMainEventNames>(...args: EventListenerArgs<E, IpcMainEvents[E]>) => void;
 
 type RequestArgs<Q extends IpcMainQueryNames> = IpcMainQueries[Q] extends { variables: infer K; } ?
-    [query: Q, variables: IpcMainQueries[Q]] :
+    [query: Q, variables: K] :
     [query: Q, variables?: {}];
 
 // todo rewrite types
