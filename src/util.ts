@@ -3,7 +3,7 @@ import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
 // UTILITY TYPES
 
 export type EventListenerArgs<Event, variables> =
-    variables extends void ? [event: Event] : [event: Event, variables: variables];
+    variables extends void | null ? [event: Event] : [event: Event, variables: variables];
 
 export type ProcessSide = "main" | "renderer";
 

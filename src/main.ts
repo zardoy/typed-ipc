@@ -94,11 +94,11 @@ let typedIpcMain = isWrongProcess ? undefined! : {
     sendToWindow<E extends IpcRendererEventNames>(
         // reducing boilerplates
         win: BrowserWindow | null,
-        channel: E,
-        data: IpcRendererEvents[E]
+        ...sendArgs: EventListenerArgs<E, IpcRendererEvents[E]>
     ) {
         if (!win) return;
-        win.webContents.send(channel, data);
+        //@ts-ignore
+        win.webContents.send(...sendArgs);
     }
 };
 

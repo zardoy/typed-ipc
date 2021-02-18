@@ -1,5 +1,4 @@
 import { IpcRenderer, ipcRenderer } from "electron";
-import { RequireExactlyOne } from "type-fest";
 
 import { IpcMainEvents, IpcMainQueries, IpcRendererEvents } from "./";
 import {
@@ -20,11 +19,6 @@ type IpcRendererSend = <E extends IpcMainEventNames>(...args: EventListenerArgs<
 type RequestArgs<Q extends IpcMainQueryNames> = IpcMainQueries[Q] extends { variables: infer K; } ?
     [query: Q, variables: K] :
     [query: Q, variables?: {}];
-
-// todo rewrite types
-type IpcRendererRequest =
-    <Q extends IpcMainQueryNames>(...args: RequestArgs<Q>)
-        => Promise<IpcMainQueries[Q] extends { data: infer T; } ? RequireExactlyOne<{ data: T, error: Error; }, "data" | "error"> : { error?: Error; }>;
 
 type IpcEventReturnType = ReturnType<typeof ipcRenderer["addListener"]>;
 
