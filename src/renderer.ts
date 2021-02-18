@@ -1,4 +1,4 @@
-import { IpcRenderer, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 
 import { IpcMainEvents, IpcMainRequests, IpcRendererEvents } from "./";
 import {
@@ -11,6 +11,8 @@ import {
 
 // EVENT TYPES
 
+type IpcManageEventsReturnType = ReturnType<typeof ipcRenderer["addListener"]>;
+
 export type IpcRendererEventListener<E extends IpcRendererEventNames> =
     (...args: EventListenerArgs<Electron.IpcRendererEvent, IpcRendererEvents[E]>) => void;
 
@@ -20,12 +22,10 @@ type RequestArgs<Q extends IpcMainRequestNames> = IpcMainRequests[Q] extends { v
     [query: Q, variables: K] :
     [query: Q, variables?: {}];
 
-type IpcEventReturnType = ReturnType<typeof ipcRenderer["addListener"]>;
-
-type AddRemoveEventListener<R extends IpcRendererEventNames = IpcRendererEventNames> = (
+type AddRemoveEventListener = <R extends IpcRendererEventNames>(
     event: R,
     listener: IpcRendererEventListener<R>
-) => IpcEventReturnType;
+) => IpcManageEventsReturnType;
 
 const isWrongProcess = process.type === "browser";
 
@@ -53,7 +53,7 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
     },
     addEventListener: ipcRenderer.on.bind(ipcRenderer) as AddRemoveEventListener,
     removeEventListener: ipcRenderer.removeListener.bind(ipcRenderer) as AddRemoveEventListener,
-    removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: IpcRendererEventNames) => Electron.IpcRenderer
+    removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: IpcRendererEventNames) => IpcManageEventsReturnType
 };
 
 if (isWrongProcess) {

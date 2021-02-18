@@ -12,12 +12,12 @@ import {
 
 // EVENT TYPES
 
+type IpcManageEventsReturnType = ReturnType<typeof ipcMain["addListener"]>;
 
 // todo-low =? syntax
-type ElectronEventArg<R extends IpcRendererEventNames = IpcRendererEventNames> =
-    Merge<Electron.IpcMainEvent, {
-        reply: (channel: R, dataToSend: IpcRendererEvents[R]) => void;
-    }>;
+type ElectronEventArg = Merge<Electron.IpcMainEvent, {
+    reply: <R extends IpcRendererEventNames>(channel: R, dataToSend: IpcRendererEvents[R]) => void;
+}>;
 
 export type IpcMainEventListener<E extends IpcMainEventNames> =
     (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
@@ -26,14 +26,12 @@ type IpcMainAllEventListeners = {
     [event in IpcMainEventNames]: IpcMainEventListener<event>
 };
 
-type IpcEventReturnType = ReturnType<typeof ipcMain["addListener"]>;
-
-type AddRemoveEventListener<E extends IpcMainEventNames> = (
+type AddRemoveEventListener = <E extends IpcMainEventNames>(
     event: E,
     listener: IpcMainEventListener<E>
-) => IpcEventReturnType;
+) => IpcManageEventsReturnType;
 
-// HANDLE TYPES
+// REQUEST TYPES
 
 export type IpcMainHandler<R extends IpcMainRequestNames> =
     (
@@ -67,7 +65,7 @@ let typedIpcMain = isWrongProcess ? undefined! : {
     /**
      * Use it to hanlde all app's queries in one place.
      */
-    handleAllQueries: (allIpcHandlers: IpcMainAllHandlers): void => {
+    handleAllRequests: (allIpcHandlers: IpcMainAllHandlers): void => {
         Object.entries(allIpcHandlers).forEach(([requestName, handler]: [string, any]) => {
             ipcMain.handle(requestName, async (e, data): Promise</* TYPE HERE */any> => {
                 try {
@@ -85,9 +83,9 @@ let typedIpcMain = isWrongProcess ? undefined! : {
 
     // GROUP Add/Remove. not recommended (todo describe why)
 
-    addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
-    removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener<IpcMainEventNames>,
-    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: IpcMainEventNames) => IpcEventReturnType,
+    addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener,
+    removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener,
+    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: IpcMainEventNames) => IpcManageEventsReturnType,
     // todo other methods
 
     sendToWindow<E extends IpcRendererEventNames>(
