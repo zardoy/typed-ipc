@@ -26,9 +26,7 @@ declare let typedIpcRenderer: {
      */
     request: <R extends IpcMainRequestNames>(...invokeArgs: RequestArgs<R>) => Promise<IpcMainRequests[R] extends {
         data: infer T;
-    } ? {
-        data: T;
-    } : {}>;
+    } ? T : void>;
     addEventListener: AddRemoveEventListener;
     removeEventListener: AddRemoveEventListener;
     removeAllListeners: (channel: IpcRendererEventNames) => IpcManageEventsReturnType;

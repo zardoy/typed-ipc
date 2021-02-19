@@ -21,7 +21,7 @@ let typedIpcRenderer = isWrongProcess ? undefined : {
             throw result.error;
         }
         else {
-            return result;
+            return result.data;
         }
     },
     addEventListener: electron_1.ipcRenderer.on.bind(electron_1.ipcRenderer),
