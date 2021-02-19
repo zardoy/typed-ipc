@@ -2,7 +2,7 @@
   "name": "typed-ipc",
   "version": "0.0.0",
   "main": "build/index.js",
-  "types": "build",
+  "types": "build/index.d.ts",
   "repository": "https://github.com/zardoy/typed-ipc.git",
   "author": "Vitaly Turovsky <vital2580@icloud.com>",
   "license": "MIT",
