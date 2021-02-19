@@ -41,13 +41,13 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      */
     request: async <R extends IpcMainRequestNames>(
         ...invokeArgs: RequestArgs<R>
-    ): Promise<IpcMainRequests[R] extends { data: infer T; } ? { data: T; } : {}> => {
+    ): Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void> => {
         //@ts-ignore todo-high
         const result = await ipcRenderer.invoke(...invokeArgs);
         if ("error" in result) {
             throw result.error;
         } else {
-            return result;
+            return result.data;
         }
     },
     addEventListener: ipcRenderer.on.bind(ipcRenderer) as AddRemoveEventListener,

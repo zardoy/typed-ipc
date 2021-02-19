@@ -1,4 +1,5 @@
 import { BrowserWindow } from "electron";
+import { expectType } from "tsd";
 
 import { typedIpcMain, typedIpcRenderer } from "./index";
 
@@ -126,12 +127,12 @@ typedIpcRenderer.send("eventWithoutVars", { firstEventVar: 0 });
 
 
 
-const { data } = await typedIpcRenderer.request("registerUser", {
+const { registered } = await typedIpcRenderer.request("registerUser", {
     name: "",
     userKey: 0,
 });
 
-data.registered;
+expectType<void>(await typedIpcRenderer.request("queryWithVariablesOnly", { something: "no" }));
 
 typedIpcRenderer.request("registerUser", {
     name: "",
