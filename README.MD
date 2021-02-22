@@ -17,11 +17,16 @@
 
 ## Usage
 
+> For quick usage example see [tests file](build/index.test-d.ts).
+
 1. Install it: `npm add https://github.com/zardoy/typed-ipc#build` (sorry for this)
 2. Create `ipcSchema.ts` in shared context (make sure it available both in *main* and *renderer* processes) with following content:
 
+<!-- todo paste docs link -->
 ```ts
-// todo: review do i need to import typed-ipc
+// you must import module to augment it
+import {} from "typed-ipc";
+
 declare module "typed-ipc" {
     // events for main process
     interface IpcMainEvents {
@@ -35,7 +40,9 @@ declare module "typed-ipc" {
     }
 
     interface IpcRendererEvents {
-        
+        sayHiToUser: {
+            makeUserSad: boolean;
+        }
     }
 }
 ```
@@ -60,13 +67,10 @@ import { app } from "electron";
 // call it on app load
 export const bindIPC = () => {
     typedIpcMain.bindAllEventListeners({
-        registerUser: (event, { name, isAdmin }) => {
-            // event - standard electron event BUT with typed event.reply !!!
-            // ... register user ...
-        },
         quitApplication: () => {
             app.quit();
-        }
+        },
+        // all other events listeners must be defined here too!
     });
 }
 ```
@@ -100,32 +104,54 @@ const registerUserCallback = () => {
     // if you misspell event name or forget to pass data you'll get a type error
 };
 // ...
-// and somewhere else bind listeners:
-typedIpcRenderer.
 
 ```
+<!-- // and somewhere else bind listeners: -->
 
-But, for now **there is no** function similar to `typedIpcMain.bindAllListeners()`, fix is coming.
+But, for now **there is no** function similar to `typedIpcMain.bindAllListeners()`, <!-- fix is coming -->.
 
 5. Requests!
 
-...
+🚧🚧🚧 Please, see example usage for now.
+
+Requests are always async.
+
+First of all you need to define them in your schema.
 
 ```ts
 // 📁 /ipc.ts
+// MAIN PROCESS
 
 import { typedIpcMain } from "typed-ipc";
-import { app } from "./";
+import { app } from "electron";
 
 typedIpcMain.handleAllRequests({
-    registerUser: ,
-    quitApplication: () => {
-        app.quit();
+    registerUser: async () => {
+        // ... do registration process
+        // give the result
+        return {
+            internalId: 50
+        }
     }
 });
 ```
 
-Of course in huge electron app, you'd split event listeners across files. Let's assume `/` our root for electron code and we're making a file explorer.
+<!-- TODO describe errors -->
+
+```ts
+// 📁 /index.ts
+// RENDERER PROCESS
+
+import { typedIpcRenderer } from "typed-ipc";
+
+const clickButtonHandler = () => {
+    const { internalId } = await typedIpcRenderer.request("registerUser", {
+        name: "prostoUser"
+    });
+}
+```
+
+<!-- Of course in huge electron app, you'd split event listeners across files. Let's assume `/` our root for electron code and we're making a file explorer. -->
 
 ## How am I Using it
 
@@ -136,15 +162,14 @@ Please have a look at my Electron apps:
 
 ## Why this?
 
-I already have looked at this libs:
+I already have looked at this alternatives:
 
 - https://github.com/orourkek/typesafe-ipc
+- https://github.com/deiucanta/electron-typed-ipc
 
 <!-- TODO -->
 
 <!-- what is renderer, main process (side) -->
-
-<!-- invokers always uses promise -->
 
 <!-- write comprehensive guide (and that handlers always takes precedence) -->
 
