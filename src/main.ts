@@ -5,6 +5,7 @@ import { IpcMainEvents, IpcMainRequests, IpcRendererEvents } from "./";
 import {
     EventListenerArgs,
     getWrongProcessMessage,
+    InterfaceDoesntAugmented,
     IpcMainEventNames,
     IpcMainRequestNames,
     IpcRendererEventNames
@@ -23,14 +24,17 @@ export type IpcMainEventListener<E extends IpcMainEventNames> =
     (...args: EventListenerArgs<ElectronEventArg, IpcMainEvents[E]>) => void;
 
 // if never - user didn't augment the interface
-type IpcMainAllEventListeners = IpcMainEventNames extends never ? {} : {
+type IpcMainAllEventListeners = IpcMainEventNames extends never ? InterfaceDoesntAugmented.mainEvents : {
     [event in IpcMainEventNames]: IpcMainEventListener<event>
 };
 
-type AddRemoveEventListener = <E extends IpcMainEventNames>(
+type AddRemoveEventListener = IpcMainEventNames extends never ? InterfaceDoesntAugmented.mainEvents : <E extends IpcMainEventNames>(
     event: E,
     listener: IpcMainEventListener<E>
 ) => IpcManageEventsReturnType;
+
+type RemoveAllEventListeners = IpcMainEventNames extends never ? InterfaceDoesntAugmented.mainEvents :
+    (event: IpcMainEventNames) => IpcManageEventsReturnType;
 
 // REQUEST TYPES
 
@@ -86,7 +90,7 @@ let typedIpcMain = isWrongProcess ? undefined! : {
 
     addEventListener: ipcMain.addListener.bind(ipcMain) as AddRemoveEventListener,
     removeEventListener: ipcMain.removeListener.bind(ipcMain) as AddRemoveEventListener,
-    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as (event: IpcMainEventNames) => IpcManageEventsReturnType,
+    removeAllListeners: ipcMain.removeAllListeners.bind(ipcMain) as RemoveAllEventListeners,
     // todo other methods
 
     sendToWindow<E extends IpcRendererEventNames>(
