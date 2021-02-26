@@ -17,16 +17,11 @@
 
 ## Usage
 
-> For quick usage example see [tests file](build/index.test-d.ts).
-
 1. Install it: `npm add https://github.com/zardoy/typed-ipc#build` (sorry for this)
 2. Create `ipcSchema.ts` in shared context (make sure it available both in *main* and *renderer* processes) with following content:
 
 <!-- todo paste docs link -->
 ```ts
-// you must import module to augment it
-import {} from "typed-ipc";
-
 declare module "typed-ipc" {
     // events for main process
     interface IpcMainEvents {
@@ -47,9 +42,11 @@ declare module "typed-ipc" {
 }
 ```
 
-That's our IPC schema for the whole application!
+That's our IPC schema for the whole application.
 
-TIP: To make sure, that you typed named of interface to augment correctly, hover to it, and you should see `Define your IPC events...`
+`IpcMainEvents` and `IpcRendererEvents` consist a key-value pair of `eventName: eventData` (you can't have more than one argument for IPC events data). Also you mustn't to augment both of these types. For example if you don't have events for *renderer* you don't need to define `IpcRendererEvents`, but in this case if you try to call `typedIpcMain.sendToMainWindow()` you'll see an Error in intellisense.
+
+> TIP: To make sure, that you typed named of interface to augment correctly, hover to it, and you should see `Define your IPC events...`
 
 <!-- TIP: When TODO -->
 
