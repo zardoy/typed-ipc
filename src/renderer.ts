@@ -39,17 +39,9 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      * 
      * Important: it will throw error if it was thrown in main process
      */
-    request: async <R extends IpcMainRequestNames>(
+    request: ipcRenderer.invoke as <R extends IpcMainRequestNames>(
         ...invokeArgs: RequestArgs<R>
-    ): Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void> => {
-        //@ts-ignore todo-high
-        const result = await ipcRenderer.invoke(...invokeArgs);
-        if ("error" in result) {
-            throw result.error;
-        } else {
-            return result.data;
-        }
-    },
+    ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>,
     addEventListener: ipcRenderer.on.bind(ipcRenderer) as AddRemoveEventListener,
     removeEventListener: ipcRenderer.removeListener.bind(ipcRenderer) as AddRemoveEventListener,
     removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: IpcRendererEventNames) => IpcManageEventsReturnType
