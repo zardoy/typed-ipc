@@ -14,16 +14,7 @@ let typedIpcRenderer = isWrongProcess ? undefined : {
      *
      * Important: it will throw error if it was thrown in main process
      */
-    request: async (...invokeArgs) => {
-        //@ts-ignore todo-high
-        const result = await electron_1.ipcRenderer.invoke(...invokeArgs);
-        if ("error" in result) {
-            throw result.error;
-        }
-        else {
-            return result.data;
-        }
-    },
+    request: electron_1.ipcRenderer.invoke,
     addEventListener: electron_1.ipcRenderer.on.bind(electron_1.ipcRenderer),
     removeEventListener: electron_1.ipcRenderer.removeListener.bind(electron_1.ipcRenderer),
     removeAllListeners: electron_1.ipcRenderer.removeAllListeners.bind(electron_1.ipcRenderer)

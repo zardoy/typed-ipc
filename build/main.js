@@ -25,16 +25,9 @@ let typedIpcMain = isWrongProcess ? undefined : {
     handleAllRequests: (allIpcHandlers) => {
         Object.entries(allIpcHandlers).forEach(([requestName, handler]) => {
             electron_1.ipcMain.handle(requestName, async (e, data) => {
-                try {
-                    return {
-                        data: await handler(e, data)
-                    };
-                }
-                catch (err) {
-                    return {
-                        error: err
-                    };
-                }
+                return {
+                    data: await handler(e, data)
+                };
             });
         });
     },
