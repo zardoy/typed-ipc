@@ -24,11 +24,7 @@ let typedIpcMain = isWrongProcess ? undefined : {
      */
     handleAllRequests: (allIpcHandlers) => {
         Object.entries(allIpcHandlers).forEach(([requestName, handler]) => {
-            electron_1.ipcMain.handle(requestName, async (e, data) => {
-                return {
-                    data: await handler(e, data)
-                };
-            });
+            electron_1.ipcMain.handle(requestName, async (e, data) => await handler(e, data));
         });
     },
     // GROUP Add/Remove. not recommended (todo describe why)
