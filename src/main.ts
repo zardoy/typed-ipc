@@ -73,15 +73,9 @@ let typedIpcMain = isWrongProcess ? undefined! : {
     handleAllRequests: (allIpcHandlers: IpcMainAllHandlers): void => {
         Object.entries(allIpcHandlers).forEach(([requestName, handler]: [string, any]) => {
             ipcMain.handle(requestName, async (e, data): Promise</* TYPE HERE */any> => {
-                try {
-                    return {
-                        data: await handler(e, data)
-                    };
-                } catch (err) {
-                    return {
-                        error: err
-                    };
-                }
+                return {
+                    data: await handler(e, data)
+                };
             });
         });
     },
