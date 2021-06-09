@@ -14,7 +14,7 @@
     "test": "tsd"
   },
   "peerDependencies": {
-    "electron": ""
+    "electron": ">=10"
   },
   "devDependencies": {
     "@types/node": "^15.12.2",
