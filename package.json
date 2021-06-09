@@ -6,6 +6,15 @@
   "repository": "https://github.com/zardoy/typed-ipc.git",
   "author": "Vitaly Turovsky <vital2580@icloud.com>",
   "license": "MIT",
+  "description": "Typesafe IPC in your Electron app",
+  "keywords": [
+    "electron",
+    "typed",
+     "ipc",
+    "schema",
+    "request",
+    "typesafe"
+  ],
   "files": [
     "build"
   ],
