@@ -1,21 +1,8 @@
 {
+    "extends": "@zardoy/tsconfig/node",
     "compilerOptions": {
-        "target": "ES2019",
-        "lib": [
-            "DOM",
-            "ES2019"
-        ],
-        "strict": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
         "module": "CommonJS",
-        "moduleResolution": "node",
-        "isolatedModules": true,
-        "declaration": true,
-        "outDir": "build"
-    },
-    "include": [
-        "src"
-    ]
+        "declaration": true
+    }
 }

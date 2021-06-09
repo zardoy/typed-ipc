@@ -1,31 +1,36 @@
 {
   "name": "typed-ipc",
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "main": "build/index.js",
-  "types": "build",
+  "types": "build/index.d.ts",
   "repository": "https://github.com/zardoy/typed-ipc.git",
   "author": "Vitaly Turovsky <vital2580@icloud.com>",
   "license": "MIT",
+  "files": [
+    "build"
+  ],
   "scripts": {
-    "prepublishOnly": "tsc && ts-node replace-script.ts && yarn test",
+    "prepublishOnly": "tsc && ts-node ./scripts/typescript-replace.ts && yarn test",
     "test": "tsd"
   },
   "peerDependencies": {
-    "electron": "*"
+    "electron": ""
   },
   "devDependencies": {
-    "@types/node": "^14.14.28",
-    "@types/react": "^17.0.2",
-    "electron": "^11.2.3",
+    "@types/node": "^15.12.2",
+    "@types/react": "^17.0.11",
+    "electron": "^13.1.1",
     "replace-in-file": "^6.2.0",
-    "ts-node": "^9.1.1",
-    "tsd": "^0.14.0",
-    "typescript": "^4.1.5"
+    "ts-node": "^10.0.0",
+    "tsd": "^0.17.0",
+    "typescript": "^4.3.2",
+    "@zardoy/tsconfig": "^1.0.2",
+    "modify-json-file": "^0.0.2"
   },
   "dependencies": {
-    "type-fest": "^0.21.0"
+    "type-fest": "^1.2.0"
   },
   "optionalDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   }
 }
