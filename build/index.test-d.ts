@@ -21,12 +21,12 @@ declare module "./index" {
                 userKey: number;
                 name: string;
             };
-            data: {
+            response: {
                 registered: boolean;
             };
         };
         queryWithoutVars: {
-            data: {
+            response: {
                 waveToUser: boolean;
             };
         };

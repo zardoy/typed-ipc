@@ -16,11 +16,9 @@ export interface IpcRendererEvents {
 }
 
 /**
+ * Alternative to ipcRenderer.invoke from Electron
+ * 
  * Define your IPC request handlers here.
- * 
- * Can also mutate data, why not.
- * 
- * Please help me to rename it.
  * 
  * @example see IpcMainQueriesExample
  */
@@ -43,7 +41,7 @@ interface IpcMainQueriesExample {
         /**
          * Data, that must be reterned from main-process invoker. (without promise)
          */
-        data: undefined;
+        response: undefined;
     };
 }
 

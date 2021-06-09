@@ -7,7 +7,8 @@ import {
     getWrongProcessMessage,
     IpcMainEventNames,
     IpcMainRequestNames,
-    IpcRendererEventNames
+    IpcRendererEventNames,
+    MaybePromise
 } from "./util";
 
 // EVENT TYPES
@@ -38,13 +39,13 @@ export type IpcMainHandler<R extends IpcMainRequestNames> =
     (
         event: Electron.IpcMainInvokeEvent,
         variables: IpcMainRequests[R] extends { variables: infer K; } ? K : void
-    ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>;
+    ) => MaybePromise<IpcMainRequests[R] extends { response: infer T; } ? T : void>;
 
 type IpcMainAllHandlers = IpcMainRequestNames extends never ? {} : {
     [Request in IpcMainRequestNames]: IpcMainHandler<Request>
 };
 
-const isWrongProcess = process.type !== "browser";
+const isWrongProcess = ipcMain === undefined;
 
 /**
  * Can be used in main process only

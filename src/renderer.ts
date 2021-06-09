@@ -27,7 +27,7 @@ type AddRemoveEventListener = <R extends IpcRendererEventNames>(
     listener: IpcRendererEventListener<R>
 ) => IpcManageEventsReturnType;
 
-const isWrongProcess = process.type === "browser";
+const isWrongProcess = ipcRenderer === undefined;
 
 /**
  * Can be used in main renderer only
@@ -41,8 +41,8 @@ let typedIpcRenderer = isWrongProcess ? undefined! : {
      */
     request: ipcRenderer.invoke as <R extends IpcMainRequestNames>(
         ...invokeArgs: RequestArgs<R>
-    ) => Promise<IpcMainRequests[R] extends { data: infer T; } ? T : void>,
-    addEventListener: ipcRenderer.on.bind(ipcRenderer) as AddRemoveEventListener,
+    ) => Promise<IpcMainRequests[R] extends { response: infer T; } ? T : void>,
+    addEventListener: ipcRenderer.addListener.bind(ipcRenderer) as AddRemoveEventListener,
     removeEventListener: ipcRenderer.removeListener.bind(ipcRenderer) as AddRemoveEventListener,
     removeAllListeners: ipcRenderer.removeAllListeners.bind(ipcRenderer) as (channel: IpcRendererEventNames) => IpcManageEventsReturnType
 };
